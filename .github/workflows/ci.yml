@@ -44,7 +44,7 @@ jobs:
             --add-host=host.docker.internal:host-gateway \
             -v ${{ github.workspace }}:/work \
             ghcr.io/orange-opensource/hurl:latest \
-            --test /work/src/test/java/api
+            --test /work/src/test/java/api \
             --report-junit /work/api-test-reports/junit.xml \
             --report-html /work/api-test-reports/report.html \
             --report-json /work/api-test-reports/report.json \
@@ -54,3 +54,9 @@ jobs:
           if [ -f save_pid.txt ]; then
             kill $(cat save_pid.txt) && echo "Application arrêtée proprement." || echo "Processus déjà mort."
           fi
+      - name: Upload Hurl Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hurl-reports
+          path: api-test-reports/
