@@ -1,4 +1,4 @@
-GET http://host.docker.internal:8085/orders
+GET http://host.docker.internal:8085/api/orders
 HTTP 200
 Content-Type: application/json; charset=utf-8
 [Asserts]
