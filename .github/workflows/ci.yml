@@ -92,7 +92,9 @@ jobs:
           tail -n 200 app.log || true
           exit 1
       - name: Prepare API test reports directory
-        run: mkdir -p zap-test-reports
+        run: |
+          mkdir -p zap-test-reports
+          chmod -R 777 zap-test-reports
       - name: OWASP ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.15.0
         with:
