@@ -94,7 +94,7 @@ jobs:
       - name: Prepare API test reports directory
         run: mkdir -p zap-test-reports
       - name: OWASP ZAP Baseline Scan
-        uses: zaproxy/action-baseline-scan@v0.14.0
+        uses: zaproxy/action-baseline@v0.15.0
         with:
           target: 'http://localhost:8085/'
           cmd_options: '-r zap-test-reports/zap_report.html -J zap-test-reports/zap_report.json'
