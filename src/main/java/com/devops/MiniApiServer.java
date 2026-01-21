@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 public final class MiniApiServer {
 
     public static void main(String[] args) throws Exception {
-        int port = 8080;
+        int port = 8085;
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
 
         // GET /health -> {"status":"UP"}
