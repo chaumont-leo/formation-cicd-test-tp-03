@@ -1,0 +1,43 @@
+name: Java CI
+
+on:
+  push:
+    branches:
+      - lchaumont
+
+jobs:
+  api-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Jar
+        run: mvn -q clean package
+      - name: Start Jar and add logs
+        run: |
+          nohup java -jar target/*.jar > app.log 2>&1 &
+          echo $! > save_pid.txt
+      - name: Wait for API to be ready
+        run: |
+          for i in {1..30}; do
+            if curl -sSf http://localhost:8085/health > /dev/null; then
+              echo "API is up!"
+              exit 0
+            fi
+            echo "Waiting API..."
+            sleep 2
+          done
+          echo "API not ready"
+          tail -n 200 app.log || true
+          exit 1
+      - name: Run API tests (Hurl via Docker)
+        run: |
+          docker run --rm \
+            --add-host=host.docker.internal:host-gateway \
+            -v ${{ github.workspace }}:/work \
+            ghcr.io/orange-opensource/hurl:latest \
+            --test /work/src/test/java/api
+      - name: Stop Application
+        if: always()
+        run: |
+          if [ -f save_pid.txt ]; then
+            kill $(cat save_pid.txt) && echo "Application arrêtée proprement." || echo "Processus déjà mort."
+          fi
